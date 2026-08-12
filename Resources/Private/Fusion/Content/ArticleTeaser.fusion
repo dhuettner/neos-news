@@ -6,7 +6,9 @@ prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentCo
     _headline = ${q(node).property('headline')}
     _limit = ${q(node).property('limit') || 3}
     _columns = ${q(node).property('columns') || 'cols3'}
-    _source = ${q(node).property('source')}
+    # Referenzen gehören nicht zur Property-API; property() greift dafür nur
+    # über eine als deprecated markierte Rückfallebene.
+    _source = ${q(node).referenceNodes('source').get(0)}
     _showArchiveLink = ${q(node).property('showArchiveLink')}
     _archiveLinkTitle = ${q(node).property('archiveLinkTitle')}
 
@@ -30,7 +32,7 @@ prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentCo
                 <div class="mt-10 text-center" @if.showLink={props._showArchiveLink && props._index}>
                     <Neos.Neos:NodeLink
                         node={props._index}
-                        class="inline-flex items-center rounded-full border-2 px-6 py-3 font-semibold"
+                        attributes.class="inline-flex items-center rounded-full border-2 px-6 py-3 font-semibold"
                     >
                         {props._archiveLinkTitle}
                     </Neos.Neos:NodeLink>
@@ -38,4 +40,18 @@ prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentCo
             </div>
         </section>
     `
+
+    # Der Teaser liest aus einem fremden Teilbaum. Ein Tag am eigenen Knoten
+    # allein würde deshalb nichts bewirken. Der Node-Typ-Tag greift bei jeder
+    # Änderung an einem Artikel, unabhängig davon, wo er liegt.
+    @cache {
+        mode = 'cached'
+        entryIdentifier {
+            node = ${Neos.Caching.entryIdentifierForNode(node)}
+        }
+        entryTags {
+            1 = ${Neos.Caching.nodeTag(node)}
+            2 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.Article', documentNode)}
+        }
+    }
 }

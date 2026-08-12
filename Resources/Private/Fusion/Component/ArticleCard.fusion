@@ -6,6 +6,11 @@
 # Ein integrierendes Site-Package überschreibt ihn, um das eigene Design
 # einzusetzen, ohne das Paket zu verändern.
 #
+# Achtung bei AFX: Neos.Neos:ImageTag und Neos.Neos:NodeLink erben von
+# Neos.Fusion:Tag und rendern ausschließlich den Teilbaum `attributes`.
+# Ein direktes class= oder alt= landet als Top-Level-Property und wird
+# stillschweigend verworfen — deshalb überall `attributes.`.
+#
 prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Component) {
     _article = ${node}
     _title = ${q(node).property('title')}
@@ -20,9 +25,8 @@ prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Compon
                 <Neos.Neos:ImageTag
                     asset={props._teaserImage}
                     maximumWidth={800}
-                    alt={props._title}
-                    loading="lazy"
-                    class="aspect-[3/2] w-full object-cover"
+                    attributes.alt={props._title}
+                    attributes.class="aspect-[3/2] w-full object-cover"
                 />
             </Neos.Neos:NodeLink>
             <div class="flex flex-1 flex-col gap-3 p-6">

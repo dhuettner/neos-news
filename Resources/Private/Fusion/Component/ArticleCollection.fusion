@@ -2,14 +2,17 @@
 # Gemeinsame Listendarstellung für Übersicht und Teaser.
 #
 # Erwartet eine FlowQuery oder ein Array von Artikel-Nodes und rendert sie
-# als Raster. Die Spaltenklassen kommen aus Waterproof.News:Component.GridClass.
+# als Raster.
 #
-# `this` zeigt in einem Sub-Objekt auf das Sub-Objekt, nicht auf diesen
-# Prototyp. Der gewählte Wert wird deshalb über @context hereingereicht;
-# ein direktes ${this.columns} im Sub-Objekt wäre eine Selbstreferenz.
+# Die Spaltenwahl wird bewusst NICHT über @context von außen hereingereicht:
+# Flowpack.Listable:PaginatedCollection cached dynamisch und stellt beim
+# Rendern aus dem Cache nur node, documentNode und site wieder her. Ein per
+# @context übergebener Wert wäre ab Seite zwei verloren. Der Wert kommt
+# deshalb aus documentNode, das im wiederhergestellten Kontext enthalten ist,
+# und ist am Nutzungsort überschreibbar.
 #
 prototype(Waterproof.News:Component.ArticleCollection) < prototype(Flowpack.Listable:Collection) {
-    columns = 'cols3'
+    columns = ${q(documentNode).property('columns') || 'cols3'}
     @context.selectedColumns = ${this.columns}
 
     listClass = Waterproof.News:Component.GridClass {

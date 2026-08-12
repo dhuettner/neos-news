@@ -37,7 +37,7 @@ Ohne diesen Eintrag ist das Paket funktionsfähig, aber ohne Layout.
 | `Waterproof.News:Document.ArticleIndex` | Artikelübersicht | Elternseite, listet ihre Artikel paginiert |
 | `Waterproof.News:Content.ArticleTeaser` | Artikel-Teaser | Zeigt die jüngsten Artikel auf beliebigen Seiten |
 
-Artikel dürfen ausschließlich unterhalb einer Artikelübersicht angelegt werden.
+Die Artikelübersicht lässt unterhalb ihrer selbst nur Artikel zu. Umgekehrt verhindert das nicht, dass ein Artikel an anderer Stelle angelegt wird — soll das ausgeschlossen sein, grenze es in deinem Site-Package über die Constraints deiner Basis-Seite ein.
 
 ## Spaltenwahl
 

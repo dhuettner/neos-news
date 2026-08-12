@@ -33,8 +33,8 @@ prototype(Waterproof.News:Content.ArticleBody) < prototype(Neos.Fusion:Component
             <Neos.Neos:ImageTag
                 asset={props._teaserImage}
                 maximumWidth={1200}
-                alt={props._title}
-                class="mb-8 w-full rounded-3xl object-cover"
+                attributes.alt={props._title}
+                attributes.class="mb-8 w-full rounded-3xl object-cover"
                 @if.hasImage={props._teaserImage}
             />
             <Neos.Neos:ContentCollection nodePath="main" />
