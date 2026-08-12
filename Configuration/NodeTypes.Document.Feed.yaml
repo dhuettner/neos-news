@@ -63,3 +63,6 @@
   constraints:
     nodeTypes:
       '*': false
+      # Ohne diese Zeile bliebe die geerbte Freigabe aus Neos.Neos:Document
+      # bestehen und unter dem Feed liessen sich Seiten anlegen.
+      'Neos.Neos:Document': false

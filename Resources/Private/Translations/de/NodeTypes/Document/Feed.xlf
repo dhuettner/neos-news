@@ -22,6 +22,14 @@
                 <source>Article index</source>
                 <target xml:lang="de">Artikelübersicht</target>
             </trans-unit>
+            <trans-unit id="properties.feedFormat.selectBoxEditor.values.atom" xml:space="preserve" approved="yes">
+                <source>Atom</source>
+                <target xml:lang="de">Atom</target>
+            </trans-unit>
+            <trans-unit id="properties.feedFormat.selectBoxEditor.values.rss" xml:space="preserve" approved="yes">
+                <source>RSS 2.0</source>
+                <target xml:lang="de">RSS 2.0</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

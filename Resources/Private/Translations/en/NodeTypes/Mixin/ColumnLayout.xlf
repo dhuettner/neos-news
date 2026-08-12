@@ -5,16 +5,16 @@
             <trans-unit id="properties.columns" xml:space="preserve" approved="yes">
                 <source>Columns</source>
             </trans-unit>
-            <trans-unit id="properties.columns.values.cols1" xml:space="preserve" approved="yes">
+            <trans-unit id="properties.columns.selectBoxEditor.values.cols1" xml:space="preserve" approved="yes">
                 <source>One column</source>
             </trans-unit>
-            <trans-unit id="properties.columns.values.cols2" xml:space="preserve" approved="yes">
+            <trans-unit id="properties.columns.selectBoxEditor.values.cols2" xml:space="preserve" approved="yes">
                 <source>Two columns</source>
             </trans-unit>
-            <trans-unit id="properties.columns.values.cols3" xml:space="preserve" approved="yes">
+            <trans-unit id="properties.columns.selectBoxEditor.values.cols3" xml:space="preserve" approved="yes">
                 <source>Three columns</source>
             </trans-unit>
-            <trans-unit id="properties.columns.values.cols4" xml:space="preserve" approved="yes">
+            <trans-unit id="properties.columns.selectBoxEditor.values.cols4" xml:space="preserve" approved="yes">
                 <source>Four columns</source>
             </trans-unit>
         </body>

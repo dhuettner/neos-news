@@ -36,11 +36,23 @@ prototype(Waterproof.News:Component.ArticleStructuredData) < prototype(Neos.Fusi
         publisher: {'@type': 'Organization', name: q(site).property('title')}
     }}
 
+    # Bild ist kein Pflichtfeld, aber das wirkungsvollste optionale für
+    # Rich Results. Absolute URL, sonst ignoriert Google es.
+    _imageUri = Neos.Neos:ImageUri {
+        asset = ${q(documentNode).property('teaserImage')}
+        maximumWidth = 1200
+        @if.hasImage = ${q(documentNode).property('teaserImage')}
+    }
+
+    _withImage = ${this._imageUri
+        ? Array.set(this._base, 'image', this._imageUri)
+        : this._base}
+
     # Den Autor nur aufnehmen, wenn er gepflegt ist — ein "author": null
     # wäre gültiges JSON, aber unsauberes schema.org.
     _data = ${q(documentNode).property('author')
-        ? Array.set(this._base, 'author', {'@type': 'Person', name: q(documentNode).property('author')})
-        : this._base}
+        ? Array.set(this._withImage, 'author', {'@type': 'Person', name: q(documentNode).property('author')})
+        : this._withImage}
 
     renderer = afx`
         <script type="application/ld+json">{Json.stringify(props._data)}</script>

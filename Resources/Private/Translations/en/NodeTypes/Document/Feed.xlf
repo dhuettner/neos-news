@@ -17,6 +17,12 @@
             <trans-unit id="properties.source" xml:space="preserve" approved="yes">
                 <source>Article index</source>
             </trans-unit>
+            <trans-unit id="properties.feedFormat.selectBoxEditor.values.atom" xml:space="preserve" approved="yes">
+                <source>Atom</source>
+            </trans-unit>
+            <trans-unit id="properties.feedFormat.selectBoxEditor.values.rss" xml:space="preserve" approved="yes">
+                <source>RSS 2.0</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
