@@ -52,6 +52,9 @@ prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentCo
         entryTags {
             1 = ${Neos.Caching.nodeTag(node)}
             2 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.Article', documentNode)}
+            # Ohne Quelle wird die erste Übersicht der Site gesucht. Ändert
+            # sich deren Bestand, muss auch dieser Teaser neu rendern.
+            3 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.ArticleIndex', documentNode)}
         }
     }
 }
