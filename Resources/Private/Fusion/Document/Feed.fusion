@@ -1,0 +1,154 @@
+##
+# Atom- und RSS-Feed der Artikel einer Übersichtsseite.
+#
+# Aufbau und Feldwahl orientieren sich an Sebobo/Shel.Blog (MIT).
+#
+# Absolute URLs entstehen über Neos.Neos:NodeUri. Einen Eel-Helfer dafür gibt
+# es in Neos 9 nicht, deshalb bekommt jeder Eintrag einen eigenen Prototyp,
+# der die URI als Property berechnet.
+#
+prototype(Waterproof.News:Document.Feed) < prototype(Neos.Fusion:Http.Message) {
+    @context.feedFormat = ${q(documentNode).property('feedFormat') || 'atom'}
+
+    httpResponseHead {
+        headers.Content-Type = ${feedFormat == 'rss'
+            ? 'application/rss+xml; charset=UTF-8'
+            : 'application/atom+xml; charset=UTF-8'}
+    }
+
+    content = Neos.Fusion:Case {
+        rss {
+            condition = ${feedFormat == 'rss'}
+            renderer = Waterproof.News:Component.RssFeed
+        }
+        atom {
+            condition = true
+            renderer = Waterproof.News:Component.AtomFeed
+        }
+    }
+
+    @cache {
+        mode = 'cached'
+        entryIdentifier {
+            node = ${Neos.Caching.entryIdentifierForNode(documentNode)}
+        }
+        entryTags {
+            1 = ${Neos.Caching.nodeTag(documentNode)}
+            2 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.Article', documentNode)}
+        }
+    }
+}
+
+##
+# Gemeinsame Datenbasis beider Formate.
+# Ohne gesetzte Quelle gilt die übergeordnete Seite.
+#
+prototype(Waterproof.News:Component.FeedArticles) < prototype(Neos.Fusion:Value) {
+    index = ${q(documentNode).referenceNodes('source').get(0) || q(documentNode).parent().get(0)}
+
+    value = ${this.index
+        ? Array.slice(
+            q(this.index).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC').get(),
+            0,
+            q(documentNode).property('limit') || 20
+          )
+        : []}
+}
+
+prototype(Waterproof.News:Component.AtomFeed) < prototype(Neos.Fusion:Component) {
+    _articles = Waterproof.News:Component.FeedArticles
+    _title = ${q(documentNode).parent().property('title') || q(site).property('title')}
+    _selfUri = Neos.Neos:NodeUri {
+        node = ${documentNode}
+        absolute = true
+    }
+    _siteUri = Neos.Neos:NodeUri {
+        node = ${site}
+        absolute = true
+    }
+    _updated = ${Array.first(this._articles)
+        ? Date.format(q(Array.first(this._articles)).property('publicationDate'), 'c')
+        : Date.format(Date.now(), 'c')}
+
+    renderer = afx`{'<?xml version="1.0" encoding="utf-8"?>'}
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{String.htmlSpecialChars(props._title)}</title>
+    <link href={props._selfUri} rel="self"/>
+    <link href={props._siteUri}/>
+    <id>{props._selfUri}</id>
+    <updated>{props._updated}</updated>
+    <Neos.Fusion:Loop items={props._articles} itemName="article">
+        <Waterproof.News:Component.AtomEntry article={article} />
+    </Neos.Fusion:Loop>
+</feed>`
+}
+
+prototype(Waterproof.News:Component.AtomEntry) < prototype(Neos.Fusion:Component) {
+    article = null
+    @context.entryNode = ${this.article}
+
+    _uri = Neos.Neos:NodeUri {
+        node = ${entryNode}
+        absolute = true
+    }
+
+    renderer = afx`
+        <entry>
+            <title>{String.htmlSpecialChars(q(props.article).property('title'))}</title>
+            <link href={props._uri}/>
+            <id>{props._uri}</id>
+            <updated>{Date.format(q(props.article).property('publicationDate'), 'c')}</updated>
+            <summary>{String.htmlSpecialChars(q(props.article).property('teaserText'))}</summary>
+            <author @if.hasAuthor={q(props.article).property('author')}>
+                <name>{String.htmlSpecialChars(q(props.article).property('author'))}</name>
+            </author>
+        </entry>
+    `
+}
+
+prototype(Waterproof.News:Component.RssFeed) < prototype(Neos.Fusion:Component) {
+    _articles = Waterproof.News:Component.FeedArticles
+    _title = ${q(documentNode).parent().property('title') || q(site).property('title')}
+    _selfUri = Neos.Neos:NodeUri {
+        node = ${documentNode}
+        absolute = true
+    }
+    _siteUri = Neos.Neos:NodeUri {
+        node = ${site}
+        absolute = true
+    }
+
+    renderer = afx`{'<?xml version="1.0" encoding="utf-8"?>'}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>{String.htmlSpecialChars(props._title)}</title>
+        <link>{props._siteUri}</link>
+        <description>{String.htmlSpecialChars(props._title)}</description>
+        <language>de-DE</language>
+        {'<atom:link href="' + props._selfUri + '" rel="self" type="application/rss+xml"/>'}
+        <Neos.Fusion:Loop items={props._articles} itemName="article">
+            <Waterproof.News:Component.RssItem article={article} />
+        </Neos.Fusion:Loop>
+    </channel>
+</rss>`
+}
+
+prototype(Waterproof.News:Component.RssItem) < prototype(Neos.Fusion:Component) {
+    article = null
+    @context.entryNode = ${this.article}
+
+    _uri = Neos.Neos:NodeUri {
+        node = ${entryNode}
+        absolute = true
+    }
+
+    renderer = afx`
+        <item>
+            <title>{String.htmlSpecialChars(q(props.article).property('title'))}</title>
+            <link>{props._uri}</link>
+            <guid isPermaLink="true">{props._uri}</guid>
+            <pubDate>{Date.format(q(props.article).property('publicationDate'), 'r')}</pubDate>
+            <description>{String.htmlSpecialChars(q(props.article).property('teaserText'))}</description>
+        </item>
+    `
+}

@@ -5,7 +5,7 @@
       type: string
       defaultValue: 'cols3'
       ui:
-        label: 'Spalten'
+        label: i18n
         reloadIfChanged: true
         inspector:
           group: 'layout'
@@ -14,32 +14,32 @@
           editorOptions:
             values:
               cols1:
-                label: 'Einspaltig'
+                label: i18n
               cols2:
-                label: 'Zweispaltig'
+                label: i18n
               cols3:
-                label: 'Dreispaltig'
+                label: i18n
               cols4:
-                label: 'Vierspaltig'
+                label: i18n
 
 'Waterproof.News:Document.ArticleIndex':
   superTypes:
     'Neos.Neos:Document': true
     'Waterproof.News:Mixin.ColumnLayout': true
   ui:
-    label: 'Artikelübersicht'
+    label: i18n
     icon: 'list'
     inspector:
       groups:
         layout:
-          label: 'Darstellung'
+          label: i18n
           position: 20
   properties:
     itemsPerPage:
       type: integer
       defaultValue: 12
       ui:
-        label: 'Artikel je Seite'
+        label: i18n
         reloadIfChanged: true
         inspector:
           group: 'layout'

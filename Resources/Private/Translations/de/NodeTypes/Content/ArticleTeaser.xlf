@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext" target-language="de">
+        <body>
+            <trans-unit id="ui.label" xml:space="preserve" approved="yes">
+                <source>Article teaser</source>
+                <target xml:lang="de">Artikel-Teaser</target>
+            </trans-unit>
+            <trans-unit id="ui.inspector.groups.teaser" xml:space="preserve" approved="yes">
+                <source>Teaser</source>
+                <target xml:lang="de">Teaser</target>
+            </trans-unit>
+            <trans-unit id="ui.inspector.groups.layout" xml:space="preserve" approved="yes">
+                <source>Appearance</source>
+                <target xml:lang="de">Darstellung</target>
+            </trans-unit>
+            <trans-unit id="properties.headline" xml:space="preserve" approved="yes">
+                <source>Headline</source>
+                <target xml:lang="de">Überschrift</target>
+            </trans-unit>
+            <trans-unit id="properties.source" xml:space="preserve" approved="yes">
+                <source>Article index</source>
+                <target xml:lang="de">Artikelübersicht</target>
+            </trans-unit>
+            <trans-unit id="properties.limit" xml:space="preserve" approved="yes">
+                <source>Number of articles</source>
+                <target xml:lang="de">Anzahl Artikel</target>
+            </trans-unit>
+            <trans-unit id="properties.showArchiveLink" xml:space="preserve" approved="yes">
+                <source>Show link to index</source>
+                <target xml:lang="de">Link zur Übersicht anzeigen</target>
+            </trans-unit>
+            <trans-unit id="properties.archiveLinkTitle" xml:space="preserve" approved="yes">
+                <source>Label of the index link</source>
+                <target xml:lang="de">Beschriftung des Übersichtslinks</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

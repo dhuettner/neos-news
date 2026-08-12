@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="properties.columns" xml:space="preserve" approved="yes">
+                <source>Columns</source>
+            </trans-unit>
+            <trans-unit id="properties.columns.values.cols1" xml:space="preserve" approved="yes">
+                <source>One column</source>
+            </trans-unit>
+            <trans-unit id="properties.columns.values.cols2" xml:space="preserve" approved="yes">
+                <source>Two columns</source>
+            </trans-unit>
+            <trans-unit id="properties.columns.values.cols3" xml:space="preserve" approved="yes">
+                <source>Three columns</source>
+            </trans-unit>
+            <trans-unit id="properties.columns.values.cols4" xml:space="preserve" approved="yes">
+                <source>Four columns</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

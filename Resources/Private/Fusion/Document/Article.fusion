@@ -6,9 +6,45 @@
 # Waterproof.News:Content.ArticleBody überschreibt.
 #
 prototype(Waterproof.News:Document.Article) < prototype(Neos.Neos:Page) {
+    head {
+        structuredData = Waterproof.News:Component.ArticleStructuredData
+    }
     body {
         content = Waterproof.News:Content.ArticleBody
     }
+}
+
+##
+# Strukturierte Daten nach schema.org/Article.
+#
+# Zusammengebaut über Json.stringify statt als handgeschriebenes JSON:
+# Ein Anführungszeichen im Titel würde das Dokument sonst zerlegen.
+#
+prototype(Waterproof.News:Component.ArticleStructuredData) < prototype(Neos.Fusion:Component) {
+    _uri = Neos.Neos:NodeUri {
+        node = ${documentNode}
+        absolute = true
+    }
+
+    _base = ${{
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: q(documentNode).property('title'),
+        datePublished: Date.format(q(documentNode).property('publicationDate'), 'c'),
+        description: q(documentNode).property('teaserText'),
+        mainEntityOfPage: this._uri,
+        publisher: {'@type': 'Organization', name: q(site).property('title')}
+    }}
+
+    # Den Autor nur aufnehmen, wenn er gepflegt ist — ein "author": null
+    # wäre gültiges JSON, aber unsauberes schema.org.
+    _data = ${q(documentNode).property('author')
+        ? Array.set(this._base, 'author', {'@type': 'Person', name: q(documentNode).property('author')})
+        : this._base}
+
+    renderer = afx`
+        <script type="application/ld+json">{Json.stringify(props._data)}</script>
+    `
 }
 
 prototype(Waterproof.News:Content.ArticleBody) < prototype(Neos.Fusion:Component) {

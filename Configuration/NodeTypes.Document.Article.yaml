@@ -6,19 +6,19 @@
     # Taxonomy-Update nachzuziehen.
     'Sitegeist.Taxonomy:Mixin.TaxonomyReferences': true
   ui:
-    label: 'Artikel'
+    label: i18n
     icon: 'newspaper'
     inspector:
       groups:
         article:
-          label: 'Artikel'
+          label: i18n
           position: 20
   properties:
     publicationDate:
       type: DateTime
       defaultValue: 'now'
       ui:
-        label: 'Veröffentlichungsdatum'
+        label: i18n
         reloadIfChanged: true
         inspector:
           group: 'article'
@@ -28,7 +28,7 @@
     teaserText:
       type: string
       ui:
-        label: 'Teasertext'
+        label: i18n
         reloadIfChanged: true
         inspector:
           group: 'article'
@@ -42,7 +42,7 @@
     teaserImage:
       type: 'Neos\Media\Domain\Model\ImageInterface'
       ui:
-        label: 'Teaserbild'
+        label: i18n
         reloadIfChanged: true
         inspector:
           group: 'article'
@@ -50,7 +50,7 @@
     author:
       type: string
       ui:
-        label: 'Autor'
+        label: i18n
         inspector:
           group: 'article'
           position: 40

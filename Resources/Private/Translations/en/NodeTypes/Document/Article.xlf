@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="ui.label" xml:space="preserve" approved="yes">
+                <source>Article</source>
+            </trans-unit>
+            <trans-unit id="ui.inspector.groups.article" xml:space="preserve" approved="yes">
+                <source>Article</source>
+            </trans-unit>
+            <trans-unit id="properties.publicationDate" xml:space="preserve" approved="yes">
+                <source>Publication date</source>
+            </trans-unit>
+            <trans-unit id="properties.teaserText" xml:space="preserve" approved="yes">
+                <source>Teaser text</source>
+            </trans-unit>
+            <trans-unit id="properties.teaserImage" xml:space="preserve" approved="yes">
+                <source>Teaser image</source>
+            </trans-unit>
+            <trans-unit id="properties.author" xml:space="preserve" approved="yes">
+                <source>Author</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

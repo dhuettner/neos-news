@@ -3,9 +3,35 @@
 # Veröffentlichungsdatum, paginiert über Flowpack.Listable.
 #
 prototype(Waterproof.News:Document.ArticleIndex) < prototype(Neos.Neos:Page) {
+    head {
+        feedLink = Waterproof.News:Component.FeedLink
+    }
     body {
         content = Waterproof.News:Content.ArticleIndexBody
     }
+}
+
+##
+# Verweis auf den Feed im Kopf der Übersicht, damit Leseprogramme ihn finden.
+# Rendert nichts, wenn unterhalb der Übersicht kein Feed liegt.
+#
+prototype(Waterproof.News:Component.FeedLink) < prototype(Neos.Fusion:Component) {
+    _feed = ${q(documentNode).children('[instanceof Waterproof.News:Document.Feed]').get(0)}
+    @context.feedNode = ${this._feed}
+
+    _uri = Neos.Neos:NodeUri {
+        node = ${feedNode}
+        absolute = true
+        @if.hasFeed = ${feedNode}
+    }
+
+    _type = ${this._feed && q(this._feed).property('feedFormat') == 'rss'
+        ? 'application/rss+xml'
+        : 'application/atom+xml'}
+
+    renderer = afx`
+        <link rel="alternate" type={props._type} href={props._uri} @if.hasFeed={props._feed} />
+    `
 }
 
 ##

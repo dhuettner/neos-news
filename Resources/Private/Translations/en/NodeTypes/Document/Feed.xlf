@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+    <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="ui.label" xml:space="preserve" approved="yes">
+                <source>Feed</source>
+            </trans-unit>
+            <trans-unit id="ui.inspector.groups.feed" xml:space="preserve" approved="yes">
+                <source>Feed</source>
+            </trans-unit>
+            <trans-unit id="properties.feedFormat" xml:space="preserve" approved="yes">
+                <source>Format</source>
+            </trans-unit>
+            <trans-unit id="properties.limit" xml:space="preserve" approved="yes">
+                <source>Number of entries</source>
+            </trans-unit>
+            <trans-unit id="properties.source" xml:space="preserve" approved="yes">
+                <source>Article index</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -36,6 +36,7 @@ Ohne diesen Eintrag ist das Paket funktionsfähig, aber ohne Layout.
 | `Waterproof.News:Document.Article` | Artikel | Einzelbeitrag mit Datum, Teasertext, Teaserbild, Autor, Inhaltsbereich |
 | `Waterproof.News:Document.ArticleIndex` | Artikelübersicht | Elternseite, listet ihre Artikel paginiert |
 | `Waterproof.News:Content.ArticleTeaser` | Artikel-Teaser | Zeigt die jüngsten Artikel auf beliebigen Seiten |
+| `Waterproof.News:Document.Feed` | Feed | Atom- oder RSS-Ausgabe der Artikel |
 
 Die Artikelübersicht lässt unterhalb ihrer selbst nur Artikel zu. Umgekehrt verhindert das nicht, dass ein Artikel an anderer Stelle angelegt wird — soll das ausgeschlossen sein, grenze es in deinem Site-Package über die Constraints deiner Basis-Seite ein.
 
@@ -69,6 +70,31 @@ prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Compon
 | `Waterproof.News:Content.ArticleBody` | Detailseite |
 | `Waterproof.News:Component.ArticleCollection` | Raster um die Karten |
 | `Waterproof.News:Component.GridClass` | Zuordnung Spaltenwert zu Klassen |
+
+## Filter und Archiv
+
+Die Übersicht wertet zwei Parameter aus:
+
+| Parameter | Wirkung |
+|---|---|
+| `kategorie` | Knotenname der Taxonomie, etwa `?kategorie=abwasserbeseitigung` |
+| `jahr` | vierstellig, etwa `?jahr=2026` |
+
+Beide sind kombinierbar und bleiben beim Blättern erhalten. Die Filterleiste zeigt nur Kategorien, denen tatsächlich ein Artikel zugeordnet ist, und die im Bestand vorkommenden Jahre.
+
+## Feed
+
+Der Feed ist ein eigener Dokumentknoten unterhalb der Übersicht, Format wählbar zwischen Atom und RSS 2.0. Die Übersichtsseite verweist im Kopf per `<link rel="alternate">` darauf.
+
+**Warum kein `/aktuelles.rss`:** Neos routet Dokumente mit genau einem site-weiten URI-Suffix, standardmäßig `.html`. Eine abweichende Endung ließe sich nur über die Site-Konfiguration erreichen und würde dann für alle Seiten gelten. Der Feed liegt deshalb unter `/aktuelles/feed.html` — mit korrektem `Content-Type`.
+
+## Strukturierte Daten
+
+Artikelseiten enthalten ein JSON-LD-Objekt vom Typ `Article` mit Titel, Datum, Beschreibung, kanonischer URL und Herausgeber. Der Autor erscheint nur, wenn er gepflegt ist.
+
+## Sprachen
+
+Backend-Labels liegen als XLIFF in `Resources/Private/Translations/` für Deutsch und Englisch vor. Weitere Sprachen: Katalog kopieren und übersetzen, die Node-Typen selbst brauchen keine Änderung.
 
 ## Kategorien
 
