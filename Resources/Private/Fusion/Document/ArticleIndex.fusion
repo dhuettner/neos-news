@@ -12,21 +12,19 @@ prototype(Waterproof.News:Document.ArticleIndex) < prototype(Neos.Neos:Page) {
 # Der eigentliche Listenkörper. Als eigener Prototyp, damit ein Site-Package
 # ihn in sein Seitenlayout einsetzen kann, ohne die Seite zu überschreiben.
 #
-# Die Spaltenzahl liest Component.ArticleCollection selbst aus documentNode,
-# damit sie das dynamische Caching der Paginierung überlebt.
+# Alle Werte werden direkt an der PaginatedCollection aus documentNode
+# abgeleitet und NICHT als props von außen hereingereicht: Der Prototyp ist
+# dynamisch gecached und stellt beim Auswerten nur node, documentNode und
+# site wieder her. Ein ${props.…} der umgebenden Component ist dort null —
+# mit itemsPerPage = null endet das in einer Division durch null.
 #
 prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Component) {
-    _articles = ${q(documentNode).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC')}
-    _itemsPerPage = ${q(documentNode).property('itemsPerPage') || 12}
-
-    renderer = afx`
-        <Flowpack.Listable:PaginatedCollection
-            collection={props._articles}
-            itemsPerPage={props._itemsPerPage}
-            listRenderer="Waterproof.News:Component.ArticleCollection"
-            showPreviousNextLinks={true}
-        />
-    `
+    renderer = Flowpack.Listable:PaginatedCollection {
+        collection = ${q(documentNode).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC')}
+        itemsPerPage = ${q(documentNode).property('itemsPerPage') || 12}
+        listRenderer = 'Waterproof.News:Component.ArticleCollection'
+        showPreviousNextLinks = true
+    }
 
     # Ohne Tags bliebe die Liste stehen, bis jemand den Cache leert:
     # Der Seiten-Cache ist nur mit dem Dokumentknoten selbst getaggt, nicht
