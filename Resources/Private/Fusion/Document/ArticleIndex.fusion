@@ -28,9 +28,17 @@ prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Comp
 
             # Ohne eigenen Diskriminator liefert der dynamische Cache die
             # erste gefilterte Ansicht für jede weitere Filterkombination aus.
-            @cache.entryDiscriminator = ${'p' + (request.arguments.currentPage || 1)
-                + '-k' + (request.arguments.kategorie || '')
-                + '-j' + (request.arguments.jahr || '')}
+            @cache.entryDiscriminator = ${'p' + String.toInteger(request.arguments.currentPage || 1)
+                + '-k' + (Type.isString(request.arguments.kategorie) ? request.arguments.kategorie : '')
+                + '-j' + (Type.isString(request.arguments.jahr) ? request.arguments.jahr : '')}
+
+            # Ohne eigene Tags fiele der dynamische Teilbaum auf
+            # TAG_EVERYTHING zurück, das die automatische Invalidierung
+            # nicht anfasst.
+            @cache.entryTags {
+                1 = ${Neos.Caching.descendantOfTag(documentNode)}
+                2 = ${Neos.Caching.nodeTag(documentNode)}
+            }
         }
     }
 
@@ -57,8 +65,8 @@ prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Comp
 # Menge unverändert.
 #
 prototype(Waterproof.News:Component.FilteredArticles) < prototype(Neos.Fusion:Value) {
-    @context.selectedCategory = ${request.arguments.kategorie}
-    @context.selectedYear = ${request.arguments.jahr}
+    @context.selectedCategory = ${Type.isString(request.arguments.kategorie) ? request.arguments.kategorie : ''}
+    @context.selectedYear = ${Type.isString(request.arguments.jahr) ? request.arguments.jahr : ''}
 
     value = ${
         Array.filter(
@@ -99,8 +107,8 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
         article => Date.format(q(article).property('publicationDate'), 'Y')
     ))))}
 
-    _selectedCategory = ${request.arguments.kategorie}
-    _selectedYear = ${request.arguments.jahr}
+    _selectedCategory = ${Type.isString(request.arguments.kategorie) ? request.arguments.kategorie : ''}
+    _selectedYear = ${Type.isString(request.arguments.jahr) ? request.arguments.jahr : ''}
 
     renderer = afx`
         <nav class="mx-auto mb-10 flex max-w-7xl flex-wrap gap-3 px-4" aria-label="Filter">
@@ -120,7 +128,6 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
                         : 'rounded-full border-2 px-4 py-2 text-sm'}
                 >{q(Array.first(Array.filter(taxonomies, taxon => taxon.name.value == categoryName))).property('title')}</Neos.Neos:NodeLink>
             </Neos.Fusion:Loop>
-
 
             <Neos.Fusion:Loop items={props._years} itemName="year">
                 <Neos.Neos:NodeLink
@@ -143,10 +150,15 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
         entryIdentifier {
             node = ${Neos.Caching.entryIdentifierForNode(documentNode)}
         }
-        entryDiscriminator = ${'k' + (request.arguments.kategorie || '') + '-j' + (request.arguments.jahr || '')}
+        entryDiscriminator = ${'k' + (Type.isString(request.arguments.kategorie) ? request.arguments.kategorie : '')
+            + '-j' + (Type.isString(request.arguments.jahr) ? request.arguments.jahr : '')}
         entryTags {
             1 = ${Neos.Caching.descendantOfTag(documentNode)}
             2 = ${Neos.Caching.nodeTag(documentNode)}
+            # Die Kategorienamen in der Leiste stammen aus Taxonomie-Knoten
+            # außerhalb dieses Teilbaums. Ohne diesen Tag bliebe ein
+            # umbenanntes Label stehen.
+            3 = ${Neos.Caching.nodeTypeTag('Sitegeist.Taxonomy:Taxonomy', documentNode)}
         }
         context {
             1 = 'node'
@@ -154,4 +166,19 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
             3 = 'site'
         }
     }
+}
+
+##
+# Die Paginierung von Flowpack.Listable baut ihre Links ausschließlich mit
+# currentPage. Ohne diese Ergänzung führt "Seite 2" bei aktivem Filter auf
+# die ungefilterte Liste — ohne sichtbaren Fehler.
+#
+# Der Prototyp wird global erweitert, weil PaginatedCollection ihn fest
+# verdrahtet. Die Parameter werden nur gesetzt, wenn sie im Request stehen.
+#
+prototype(Flowpack.Listable:PaginationParameters) {
+    kategorie = ${request.arguments.kategorie}
+    kategorie.@if.isSet = ${Type.isString(request.arguments.kategorie) && request.arguments.kategorie != ''}
+    jahr = ${request.arguments.jahr}
+    jahr.@if.isSet = ${Type.isString(request.arguments.jahr) && request.arguments.jahr != ''}
 }
