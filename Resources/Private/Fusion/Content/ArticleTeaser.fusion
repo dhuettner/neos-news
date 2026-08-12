@@ -1,0 +1,41 @@
+##
+# Teaser-Element: zeigt die jüngsten Artikel einer Übersichtsseite,
+# einsetzbar auf jeder beliebigen Seite.
+#
+prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentComponent) {
+    _headline = ${q(node).property('headline')}
+    _limit = ${q(node).property('limit') || 3}
+    _columns = ${q(node).property('columns') || 'cols3'}
+    _source = ${q(node).property('source')}
+    _showArchiveLink = ${q(node).property('showArchiveLink')}
+    _archiveLinkTitle = ${q(node).property('archiveLinkTitle')}
+
+    # Ohne gewählte Quelle wird die erste Artikelübersicht der Site verwendet.
+    _index = ${this._source ? this._source : q(site).find('[instanceof Waterproof.News:Document.ArticleIndex]').get(0)}
+
+    _articles = ${this._index
+        ? q(this._index).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC').slice(0, this._limit).get()
+        : []}
+
+    renderer = afx`
+        <section class="px-4 py-16">
+            <div class="mx-auto max-w-7xl">
+                <h2 class="mb-10 text-center text-3xl font-bold" @if.hasHeadline={props._headline}>
+                    {props._headline}
+                </h2>
+                <Waterproof.News:Component.ArticleCollection
+                    items={props._articles}
+                    columns={props._columns}
+                />
+                <div class="mt-10 text-center" @if.showLink={props._showArchiveLink && props._index}>
+                    <Neos.Neos:NodeLink
+                        node={props._index}
+                        class="inline-flex items-center rounded-full border-2 px-6 py-3 font-semibold"
+                    >
+                        {props._archiveLinkTitle}
+                    </Neos.Neos:NodeLink>
+                </div>
+            </div>
+        </section>
+    `
+}

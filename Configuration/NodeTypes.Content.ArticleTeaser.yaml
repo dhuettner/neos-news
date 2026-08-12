@@ -1,0 +1,59 @@
+'Waterproof.News:Content.ArticleTeaser':
+  superTypes:
+    'Neos.Neos:Content': true
+    'Waterproof.News:Mixin.ColumnLayout': true
+  ui:
+    label: 'Artikel-Teaser'
+    icon: 'newspaper'
+    group: 'structure'
+    inspector:
+      groups:
+        teaser:
+          label: 'Teaser'
+          position: 10
+        layout:
+          label: 'Darstellung'
+          position: 20
+  properties:
+    headline:
+      type: string
+      defaultValue: 'Aktuelles'
+      ui:
+        label: 'Überschrift'
+        inlineEditable: true
+    source:
+      type: reference
+      ui:
+        label: 'Artikelübersicht'
+        reloadIfChanged: true
+        inspector:
+          group: 'teaser'
+          position: 10
+          editorOptions:
+            nodeTypes: ['Waterproof.News:Document.ArticleIndex']
+            placeholder: 'Übersichtsseite wählen'
+    limit:
+      type: integer
+      defaultValue: 3
+      ui:
+        label: 'Anzahl Artikel'
+        reloadIfChanged: true
+        inspector:
+          group: 'teaser'
+          position: 20
+    showArchiveLink:
+      type: boolean
+      defaultValue: true
+      ui:
+        label: 'Link zur Übersicht anzeigen'
+        inspector:
+          group: 'teaser'
+          position: 30
+    archiveLinkTitle:
+      type: string
+      defaultValue: 'Alle Neuigkeiten'
+      ui:
+        label: 'Beschriftung des Übersichtslinks'
+        inspector:
+          group: 'teaser'
+          position: 40

@@ -1,0 +1,43 @@
+##
+# Artikel-Detailseite.
+#
+# Bewusst schlank: Titel, Datum, Autor, Teaserbild und der Inhaltsbereich.
+# Alles Weitere gestaltet das integrierende Site-Package, indem es
+# Waterproof.News:Content.ArticleBody überschreibt.
+#
+prototype(Waterproof.News:Document.Article) < prototype(Neos.Neos:Page) {
+    body {
+        content = Waterproof.News:Content.ArticleBody
+    }
+}
+
+prototype(Waterproof.News:Content.ArticleBody) < prototype(Neos.Fusion:Component) {
+    _title = ${q(documentNode).property('title')}
+    _publicationDate = ${q(documentNode).property('publicationDate')}
+    _author = ${q(documentNode).property('author')}
+    _teaserImage = ${q(documentNode).property('teaserImage')}
+
+    renderer = afx`
+        <article class="mx-auto max-w-3xl px-4 py-12">
+            <header class="mb-8 flex flex-col gap-3">
+                <time
+                    class="text-sm font-medium"
+                    datetime={Date.format(props._publicationDate, 'Y-m-d')}
+                    @if.hasDate={props._publicationDate}
+                >
+                    {Date.format(props._publicationDate, 'd.m.Y')}
+                </time>
+                <h1 class="text-4xl font-bold leading-tight">{props._title}</h1>
+                <p class="text-sm" @if.hasAuthor={props._author}>{props._author}</p>
+            </header>
+            <Neos.Neos:ImageTag
+                asset={props._teaserImage}
+                maximumWidth={1200}
+                alt={props._title}
+                class="mb-8 w-full rounded-3xl object-cover"
+                @if.hasImage={props._teaserImage}
+            />
+            <Neos.Neos:ContentCollection nodePath="main" />
+        </article>
+    `
+}

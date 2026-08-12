@@ -1,0 +1,37 @@
+##
+# Übersichtsseite: listet alle Artikel darunter, absteigend nach
+# Veröffentlichungsdatum, paginiert über Flowpack.Listable.
+#
+prototype(Waterproof.News:Document.ArticleIndex) < prototype(Neos.Neos:Page) {
+    body {
+        content = Waterproof.News:Content.ArticleIndexBody
+    }
+}
+
+##
+# Der eigentliche Listenkörper. Als eigener Prototyp, damit ein Site-Package
+# ihn in sein Seitenlayout einsetzen kann, ohne die Seite zu überschreiben.
+#
+prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Component) {
+    _articles = ${q(documentNode).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC')}
+    _columns = ${q(documentNode).property('columns') || 'cols3'}
+    _itemsPerPage = ${q(documentNode).property('itemsPerPage') || 12}
+
+    renderer = afx`
+        <Flowpack.Listable:PaginatedCollection
+            collection={props._articles}
+            itemsPerPage={props._itemsPerPage}
+            listRenderer="Waterproof.News:Component.ArticleCollection"
+            showPreviousNextLinks={true}
+            @context.selectedColumns={props._columns}
+        />
+    `
+}
+
+##
+# Der PaginatedCollection reicht nur `items` an den listRenderer weiter.
+# Die Spaltenwahl kommt deshalb über den Kontext an der Collection an.
+#
+prototype(Waterproof.News:Component.ArticleCollection) {
+    columns = ${selectedColumns || 'cols3'}
+}

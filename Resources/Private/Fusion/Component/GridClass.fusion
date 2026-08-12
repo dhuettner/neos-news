@@ -1,0 +1,17 @@
+##
+# Übersetzt den Property-Wert der Spaltenauswahl in vollständige Tailwind-Klassen.
+#
+# Wichtig: Die Klassennamen stehen hier ausgeschrieben. Ein zusammengesetzter
+# Name wie ${'grid-cols-' + columns} taucht im Quelltext nirgends auf, wird vom
+# Tailwind-Content-Scan nicht gefunden und fehlt im gebauten CSS.
+#
+prototype(Waterproof.News:Component.GridClass) < prototype(Neos.Fusion:Match) {
+    @subject = ${this.columns}
+    columns = 'cols3'
+
+    cols1 = 'grid grid-cols-1 gap-8'
+    cols2 = 'grid grid-cols-1 gap-8 md:grid-cols-2'
+    cols3 = 'grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'
+    cols4 = 'grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'
+    @default = 'grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3'
+}

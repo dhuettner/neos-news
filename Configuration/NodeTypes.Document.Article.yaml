@@ -1,0 +1,74 @@
+'Waterproof.News:Mixin.Categorizable':
+  abstract: true
+  properties:
+    taxonomyReferences:
+      type: references
+      ui:
+        label: 'Kategorien'
+        reloadIfChanged: true
+        inspector:
+          group: 'categories'
+          editorOptions:
+            nodeTypes: ['Sitegeist.Taxonomy:Taxonomy']
+            startingPoint: '/<Sitegeist.Taxonomy:Root>'
+            placeholder: 'Kategorien zuweisen'
+
+'Waterproof.News:Document.Article':
+  superTypes:
+    'Neos.Neos:Document': true
+    'Waterproof.News:Mixin.Categorizable': true
+  ui:
+    label: 'Artikel'
+    icon: 'newspaper'
+    inspector:
+      groups:
+        article:
+          label: 'Artikel'
+          position: 20
+        categories:
+          label: 'Kategorien'
+          position: 30
+  properties:
+    publicationDate:
+      type: DateTime
+      defaultValue: 'now'
+      ui:
+        label: 'Veröffentlichungsdatum'
+        reloadIfChanged: true
+        inspector:
+          group: 'article'
+          position: 10
+          editorOptions:
+            format: 'd.m.Y'
+    teaserText:
+      type: string
+      ui:
+        label: 'Teasertext'
+        reloadIfChanged: true
+        inspector:
+          group: 'article'
+          position: 20
+          editorOptions:
+            maxlength: 300
+        inlineEditable: false
+      validation:
+        'Neos.Neos/Validation/StringLengthValidator':
+          maximum: 300
+    teaserImage:
+      type: 'Neos\Media\Domain\Model\ImageInterface'
+      ui:
+        label: 'Teaserbild'
+        reloadIfChanged: true
+        inspector:
+          group: 'article'
+          position: 30
+    author:
+      type: string
+      ui:
+        label: 'Autor'
+        inspector:
+          group: 'article'
+          position: 40
+  childNodes:
+    main:
+      type: 'Neos.Neos:ContentCollection'

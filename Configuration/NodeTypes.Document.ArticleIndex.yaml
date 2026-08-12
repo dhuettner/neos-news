@@ -1,0 +1,53 @@
+'Waterproof.News:Mixin.ColumnLayout':
+  abstract: true
+  properties:
+    columns:
+      type: string
+      defaultValue: 'cols3'
+      ui:
+        label: 'Spalten'
+        reloadIfChanged: true
+        inspector:
+          group: 'layout'
+          position: 10
+          editor: 'Neos.Neos/Inspector/Editors/SelectBoxEditor'
+          editorOptions:
+            values:
+              cols1:
+                label: 'Einspaltig'
+              cols2:
+                label: 'Zweispaltig'
+              cols3:
+                label: 'Dreispaltig'
+              cols4:
+                label: 'Vierspaltig'
+
+'Waterproof.News:Document.ArticleIndex':
+  superTypes:
+    'Neos.Neos:Document': true
+    'Waterproof.News:Mixin.ColumnLayout': true
+  ui:
+    label: 'Artikelübersicht'
+    icon: 'list'
+    inspector:
+      groups:
+        layout:
+          label: 'Darstellung'
+          position: 20
+  properties:
+    itemsPerPage:
+      type: integer
+      defaultValue: 12
+      ui:
+        label: 'Artikel je Seite'
+        reloadIfChanged: true
+        inspector:
+          group: 'layout'
+          position: 20
+  constraints:
+    nodeTypes:
+      '*': false
+      'Waterproof.News:Document.Article': true
+  childNodes:
+    main:
+      type: 'Neos.Neos:ContentCollection'

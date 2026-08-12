@@ -1,0 +1,44 @@
+##
+# Kartendarstellung eines Artikels in Listen.
+#
+# Flowpack.Listable rendert Listeneinträge über den Prototyp
+# <NodeTypeName>.Short. Deshalb heißt dieser Prototyp exakt so.
+# Ein integrierendes Site-Package überschreibt ihn, um das eigene Design
+# einzusetzen, ohne das Paket zu verändern.
+#
+prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Component) {
+    _article = ${node}
+    _title = ${q(node).property('title')}
+    _teaserText = ${q(node).property('teaserText')}
+    _teaserImage = ${q(node).property('teaserImage')}
+    _publicationDate = ${q(node).property('publicationDate')}
+    _author = ${q(node).property('author')}
+
+    renderer = afx`
+        <article class="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm">
+            <Neos.Neos:NodeLink node={props._article} @if.hasImage={props._teaserImage}>
+                <Neos.Neos:ImageTag
+                    asset={props._teaserImage}
+                    maximumWidth={800}
+                    alt={props._title}
+                    loading="lazy"
+                    class="aspect-[3/2] w-full object-cover"
+                />
+            </Neos.Neos:NodeLink>
+            <div class="flex flex-1 flex-col gap-3 p-6">
+                <time
+                    class="text-sm font-medium"
+                    datetime={Date.format(props._publicationDate, 'Y-m-d')}
+                    @if.hasDate={props._publicationDate}
+                >
+                    {Date.format(props._publicationDate, 'd.m.Y')}
+                </time>
+                <h3 class="text-xl font-bold leading-tight">
+                    <Neos.Neos:NodeLink node={props._article}>{props._title}</Neos.Neos:NodeLink>
+                </h3>
+                <p class="flex-1 text-base" @if.hasTeaser={props._teaserText}>{props._teaserText}</p>
+                <p class="text-sm" @if.hasAuthor={props._author}>{props._author}</p>
+            </div>
+        </article>
+    `
+}
