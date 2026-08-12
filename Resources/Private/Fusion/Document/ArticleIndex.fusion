@@ -12,18 +12,26 @@ prototype(Waterproof.News:Document.ArticleIndex) < prototype(Neos.Neos:Page) {
 # Der eigentliche Listenkörper. Als eigener Prototyp, damit ein Site-Package
 # ihn in sein Seitenlayout einsetzen kann, ohne die Seite zu überschreiben.
 #
-# Alle Werte werden direkt an der PaginatedCollection aus documentNode
-# abgeleitet und NICHT als props von außen hereingereicht: Der Prototyp ist
-# dynamisch gecached und stellt beim Auswerten nur node, documentNode und
-# site wieder her. Ein ${props.…} der umgebenden Component ist dort null —
-# mit itemsPerPage = null endet das in einer Division durch null.
+# Alle Werte werden direkt an der PaginatedCollection aus documentNode und
+# request abgeleitet und NICHT als props von außen hereingereicht: Der
+# Prototyp ist dynamisch gecached und stellt beim Auswerten nur node,
+# documentNode und site wieder her.
 #
 prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Component) {
-    renderer = Flowpack.Listable:PaginatedCollection {
-        collection = ${q(documentNode).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC')}
-        itemsPerPage = ${q(documentNode).property('itemsPerPage') || 12}
-        listRenderer = 'Waterproof.News:Component.ArticleCollection'
-        showPreviousNextLinks = true
+    renderer = Neos.Fusion:Join {
+        filter = Waterproof.News:Component.ArticleFilter
+        list = Flowpack.Listable:PaginatedCollection {
+            collection = Waterproof.News:Component.FilteredArticles
+            itemsPerPage = ${q(documentNode).property('itemsPerPage') || 12}
+            listRenderer = 'Waterproof.News:Component.ArticleCollection'
+            showPreviousNextLinks = true
+
+            # Ohne eigenen Diskriminator liefert der dynamische Cache die
+            # erste gefilterte Ansicht für jede weitere Filterkombination aus.
+            @cache.entryDiscriminator = ${'p' + (request.arguments.currentPage || 1)
+                + '-k' + (request.arguments.kategorie || '')
+                + '-j' + (request.arguments.jahr || '')}
+        }
     }
 
     # Ohne Tags bliebe die Liste stehen, bis jemand den Cache leert:
@@ -37,6 +45,113 @@ prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Comp
         entryTags {
             1 = ${Neos.Caching.descendantOfTag(documentNode)}
             2 = ${Neos.Caching.nodeTag(documentNode)}
+        }
+    }
+}
+
+##
+# Artikelmenge der Übersicht, gefiltert nach Kategorie und Jahr.
+#
+# Die Kategorie kommt als Knotenname der Taxonomie in den Parameter
+# `kategorie`, das Jahr vierstellig in `jahr`. Ohne Parameter bleibt die
+# Menge unverändert.
+#
+prototype(Waterproof.News:Component.FilteredArticles) < prototype(Neos.Fusion:Value) {
+    @context.selectedCategory = ${request.arguments.kategorie}
+    @context.selectedYear = ${request.arguments.jahr}
+
+    value = ${
+        Array.filter(
+            q(documentNode).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC').get(),
+            article =>
+                (!selectedCategory || Array.some(
+                    Array.map(q(article).referenceNodes('taxonomyReferences').get(), taxon => taxon.name.value),
+                    assigned => assigned == selectedCategory
+                ))
+                && (!selectedYear || Date.format(q(article).property('publicationDate'), 'Y') == selectedYear)
+        )
+    }
+}
+
+##
+# Filterleiste: Kategorien aus dem Vokabular, Jahre aus dem Bestand.
+#
+prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Component) {
+    # Vokabularname, überschreibbar im Site-Package.
+    vocabulary = 'sparten'
+
+    _articles = ${q(documentNode).children('[instanceof Waterproof.News:Document.Article]').get()}
+
+    # Alle zugeordneten Taxonomie-Knoten, mit Dubletten.
+    # Array.flatten gibt es in dieser Eel-Version nicht, deshalb Array.reduce
+    # mit Array.concat.
+    _assignedTaxonomies = ${Array.reduce(
+        this._articles,
+        (carry, article) => Array.concat(carry, q(article).referenceNodes('taxonomyReferences').get()),
+        []
+    )}
+
+    # Nur Kategorien anbieten, denen tatsächlich ein Artikel zugeordnet ist.
+    _categoryNames = ${Array.sort(Array.unique(Array.map(this._assignedTaxonomies, taxon => taxon.name.value)))}
+
+    _years = ${Array.reverse(Array.sort(Array.unique(Array.map(
+        this._articles,
+        article => Date.format(q(article).property('publicationDate'), 'Y')
+    ))))}
+
+    _selectedCategory = ${request.arguments.kategorie}
+    _selectedYear = ${request.arguments.jahr}
+
+    renderer = afx`
+        <nav class="mx-auto mb-10 flex max-w-7xl flex-wrap gap-3 px-4" aria-label="Filter">
+            <Neos.Neos:NodeLink
+                node={documentNode}
+                attributes.class={props._selectedCategory || props._selectedYear
+                    ? 'rounded-full border-2 px-4 py-2 text-sm'
+                    : 'rounded-full border-2 px-4 py-2 text-sm font-bold'}
+            >Alle</Neos.Neos:NodeLink>
+
+            <Neos.Fusion:Loop items={props._categoryNames} itemName="categoryName" @context.taxonomies={props._assignedTaxonomies}>
+                <Neos.Neos:NodeLink
+                    node={documentNode}
+                    additionalParams={{kategorie: categoryName}}
+                    attributes.class={categoryName == props._selectedCategory
+                        ? 'rounded-full border-2 px-4 py-2 text-sm font-bold'
+                        : 'rounded-full border-2 px-4 py-2 text-sm'}
+                >{q(Array.first(Array.filter(taxonomies, taxon => taxon.name.value == categoryName))).property('title')}</Neos.Neos:NodeLink>
+            </Neos.Fusion:Loop>
+
+
+            <Neos.Fusion:Loop items={props._years} itemName="year">
+                <Neos.Neos:NodeLink
+                    node={documentNode}
+                    additionalParams={{jahr: year}}
+                    attributes.class={year == props._selectedYear
+                        ? 'rounded-full border-2 px-4 py-2 text-sm font-bold'
+                        : 'rounded-full border-2 px-4 py-2 text-sm'}
+                >{year}</Neos.Neos:NodeLink>
+            </Neos.Fusion:Loop>
+        </nav>
+    `
+
+    # Die Leiste hängt vom Request ab und muss deshalb dynamisch cachen.
+    # Ohne das kommt sie aus dem statischen Cache des umgebenden Prototyps
+    # und zeigt dauerhaft den Zustand des ersten Aufrufs — der aktive Filter
+    # wäre nie markiert.
+    @cache {
+        mode = 'dynamic'
+        entryIdentifier {
+            node = ${Neos.Caching.entryIdentifierForNode(documentNode)}
+        }
+        entryDiscriminator = ${'k' + (request.arguments.kategorie || '') + '-j' + (request.arguments.jahr || '')}
+        entryTags {
+            1 = ${Neos.Caching.descendantOfTag(documentNode)}
+            2 = ${Neos.Caching.nodeTag(documentNode)}
+        }
+        context {
+            1 = 'node'
+            2 = 'documentNode'
+            3 = 'site'
         }
     }
 }
