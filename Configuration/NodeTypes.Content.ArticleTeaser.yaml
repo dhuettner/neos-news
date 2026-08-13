@@ -6,6 +6,8 @@
     label: i18n
     icon: 'newspaper'
     group: 'structure'
+    help:
+      message: i18n
     inspector:
       groups:
         teaser:

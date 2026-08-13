@@ -3,7 +3,10 @@
     <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext">
         <body>
             <trans-unit id="ui.label" xml:space="preserve" approved="yes">
-                <source>Article teaser</source>
+                <source>Article teaser (News)</source>
+            </trans-unit>
+            <trans-unit id="ui.help.message" xml:space="preserve" approved="yes">
+                <source>Shows the latest articles of an article index. Choose the index, the number of articles and the columns.</source>
             </trans-unit>
             <trans-unit id="ui.inspector.groups.teaser" xml:space="preserve" approved="yes">
                 <source>Teaser</source>

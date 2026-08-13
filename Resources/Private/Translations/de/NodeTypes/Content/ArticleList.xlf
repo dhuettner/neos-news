@@ -3,8 +3,12 @@
     <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext" target-language="de">
         <body>
             <trans-unit id="ui.label" xml:space="preserve" approved="yes">
-                <source>Article list</source>
-                <target xml:lang="de">Artikelliste</target>
+                <source>Article list (News)</source>
+                <target xml:lang="de">Artikelliste (News)</target>
+            </trans-unit>
+            <trans-unit id="ui.help.message" xml:space="preserve" approved="yes">
+                <source>Full, paginated list of articles for any page. Choose the index, articles per page and columns.</source>
+                <target xml:lang="de">Vollständige, seitenweise Liste von Artikeln für beliebige Seiten. Übersichtsseite, Artikel je Seite und Spalten sind wählbar.</target>
             </trans-unit>
             <trans-unit id="ui.inspector.groups.list" xml:space="preserve" approved="yes">
                 <source>List</source>

@@ -3,8 +3,12 @@
     <file original="" product-name="Waterproof.News" source-language="en" datatype="plaintext" target-language="de">
         <body>
             <trans-unit id="ui.label" xml:space="preserve" approved="yes">
-                <source>Article teaser</source>
-                <target xml:lang="de">Artikel-Teaser</target>
+                <source>Article teaser (News)</source>
+                <target xml:lang="de">Aktuelles-Teaser (News)</target>
+            </trans-unit>
+            <trans-unit id="ui.help.message" xml:space="preserve" approved="yes">
+                <source>Shows the latest articles of an article index. Choose the index, the number of articles and the columns.</source>
+                <target xml:lang="de">Zeigt die neuesten Artikel einer Artikelübersicht. Übersichtsseite, Anzahl und Spalten sind wählbar; ohne gewählte Übersicht wird die erste der Seite verwendet.</target>
             </trans-unit>
             <trans-unit id="ui.inspector.groups.teaser" xml:space="preserve" approved="yes">
                 <source>Teaser</source>
