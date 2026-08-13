@@ -1,0 +1,73 @@
+##
+# Artikelliste als Inhaltselement, paginiert.
+#
+# Der Listen-Prototyp steht als Fusion-Objekt, nicht in AFX: Ein
+# {Waterproof.News:Component.…} innerhalb von AFX wird als Eel-Ausdruck
+# geparst und bricht mit "could not be parsed" ab. Prototypen lassen sich in
+# AFX nur als Element schreiben, nicht als Attributwert.
+#
+# Alle Werte, die innerhalb der PaginatedCollection gebraucht werden, leiten
+# sich aus `node` ab. Der Prototyp cached dynamisch und stellt beim Auswerten
+# nur node, documentNode und site wieder her — per @context hereingereichte
+# Werte wären dort verloren.
+#
+prototype(Waterproof.News:Content.ArticleList) < prototype(Neos.Neos:ContentComponent) {
+    renderer = Neos.Fusion:Join {
+        headline = Neos.Fusion:Component {
+            _headline = ${q(node).property('headline')}
+            renderer = afx`
+                <h2 class="mb-10 text-3xl font-bold" @if.hasHeadline={props._headline}>
+                    {props._headline}
+                </h2>
+            `
+        }
+
+        list = Flowpack.Listable:PaginatedCollection {
+            collection = Waterproof.News:Component.ArticleListCollection
+            itemsPerPage = ${q(node).property('itemsPerPage') || 9}
+            listRenderer = 'Waterproof.News:Component.ArticleCollection'
+            showPreviousNextLinks = true
+
+            @cache.entryDiscriminator = ${'p' + String.toInteger(request.arguments.currentPage || 1)}
+            @cache.entryTags {
+                1 = ${Neos.Caching.nodeTag(node)}
+                2 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.Article', documentNode)}
+            }
+        }
+
+        @process.wrap = ${'<section class="px-4 py-16"><div class="mx-auto max-w-7xl">' + value + '</div></section>'}
+    }
+
+    @cache {
+        mode = 'cached'
+        entryIdentifier {
+            node = ${Neos.Caching.entryIdentifierForNode(node)}
+        }
+        entryTags {
+            1 = ${Neos.Caching.nodeTag(node)}
+            2 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.Article', documentNode)}
+            3 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.ArticleIndex', documentNode)}
+        }
+    }
+}
+
+##
+# Artikelmenge des Listen-Elements.
+# Ohne gewählte Quelle gilt die erste Übersicht der Site.
+#
+prototype(Waterproof.News:Component.ArticleListCollection) < prototype(Neos.Fusion:Value) {
+    index = ${q(node).referenceNodes('source').get(0)
+        || q(site).find('[instanceof Waterproof.News:Document.ArticleIndex]').get(0)}
+
+    value = ${this.index
+        ? q(this.index).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC')
+        : []}
+}
+
+##
+# Die Collection liest ihre Spaltenzahl aus documentNode. Im Listen-Element
+# steht die Wahl aber am Inhaltsknoten, deshalb hier der Vorrang für `node`.
+#
+prototype(Waterproof.News:Component.ArticleCollection) {
+    columns = ${q(node).property('columns') || q(documentNode).property('columns') || 'cols3'}
+}

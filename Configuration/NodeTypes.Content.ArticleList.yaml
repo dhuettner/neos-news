@@ -1,0 +1,50 @@
+##
+# Artikelliste als Inhaltselement.
+#
+# Unterschied zum Artikel-Teaser: Diese Liste ist paginiert und für eine
+# vollständige Übersicht gedacht, die auf einer beliebigen Seite liegen darf —
+# etwa einer Spartenseite, die nur ihre eigenen Meldungen zeigt. Der Teaser
+# zeigt dagegen eine feste, kleine Anzahl.
+#
+'Waterproof.News:Content.ArticleList':
+  superTypes:
+    'Neos.Neos:Content': true
+    'Waterproof.News:Mixin.ColumnLayout': true
+  ui:
+    label: i18n
+    icon: 'list'
+    group: 'structure'
+    inspector:
+      groups:
+        list:
+          label: i18n
+          position: 10
+        layout:
+          label: i18n
+          position: 20
+  properties:
+    headline:
+      type: string
+      ui:
+        label: i18n
+        inlineEditable: true
+    source:
+      type: reference
+      ui:
+        label: i18n
+        reloadIfChanged: true
+        inspector:
+          group: 'list'
+          position: 10
+          editorOptions:
+            nodeTypes: ['Waterproof.News:Document.ArticleIndex']
+            placeholder: 'Übersichtsseite wählen'
+    itemsPerPage:
+      type: integer
+      defaultValue: 9
+      ui:
+        label: i18n
+        reloadIfChanged: true
+        inspector:
+          group: 'list'
+          position: 20
