@@ -1,11 +1,3 @@
-##
-# Artikelliste als Inhaltselement.
-#
-# Unterschied zum Artikel-Teaser: Diese Liste ist paginiert und für eine
-# vollständige Übersicht gedacht, die auf einer beliebigen Seite liegen darf —
-# etwa einer Spartenseite, die nur ihre eigenen Meldungen zeigt. Der Teaser
-# zeigt dagegen eine feste, kleine Anzahl.
-#
 'Waterproof.News:Content.ArticleList':
   superTypes:
     'Neos.Neos:Content': true

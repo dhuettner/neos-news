@@ -1,16 +1,3 @@
-##
-# Artikelliste als Inhaltselement, paginiert.
-#
-# Der Listen-Prototyp steht als Fusion-Objekt, nicht in AFX: Ein
-# {Waterproof.News:Component.…} innerhalb von AFX wird als Eel-Ausdruck
-# geparst und bricht mit "could not be parsed" ab. Prototypen lassen sich in
-# AFX nur als Element schreiben, nicht als Attributwert.
-#
-# Alle Werte, die innerhalb der PaginatedCollection gebraucht werden, leiten
-# sich aus `node` ab. Der Prototyp cached dynamisch und stellt beim Auswerten
-# nur node, documentNode und site wieder her — per @context hereingereichte
-# Werte wären dort verloren.
-#
 prototype(Waterproof.News:Content.ArticleList) < prototype(Neos.Neos:ContentComponent) {
     renderer = Neos.Fusion:Join {
         headline = Neos.Fusion:Component {
@@ -51,10 +38,6 @@ prototype(Waterproof.News:Content.ArticleList) < prototype(Neos.Neos:ContentComp
     }
 }
 
-##
-# Artikelmenge des Listen-Elements.
-# Ohne gewählte Quelle gilt die erste Übersicht der Site.
-#
 prototype(Waterproof.News:Component.ArticleListCollection) < prototype(Neos.Fusion:Value) {
     index = ${q(node).referenceNodes('source').get(0)
         || q(site).find('[instanceof Waterproof.News:Document.ArticleIndex]').get(0)}
@@ -64,10 +47,6 @@ prototype(Waterproof.News:Component.ArticleListCollection) < prototype(Neos.Fusi
         : []}
 }
 
-##
-# Die Collection liest ihre Spaltenzahl aus documentNode. Im Listen-Element
-# steht die Wahl aber am Inhaltsknoten, deshalb hier der Vorrang für `node`.
-#
 prototype(Waterproof.News:Component.ArticleCollection) {
     columns = ${q(node).property('columns') || q(documentNode).property('columns') || 'cols3'}
 }

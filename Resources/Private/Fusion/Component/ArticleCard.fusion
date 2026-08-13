@@ -1,16 +1,3 @@
-##
-# Kartendarstellung eines Artikels in Listen.
-#
-# Flowpack.Listable rendert Listeneinträge über den Prototyp
-# <NodeTypeName>.Short. Deshalb heißt dieser Prototyp exakt so.
-# Ein integrierendes Site-Package überschreibt ihn, um das eigene Design
-# einzusetzen, ohne das Paket zu verändern.
-#
-# Achtung bei AFX: Neos.Neos:ImageTag und Neos.Neos:NodeLink erben von
-# Neos.Fusion:Tag und rendern ausschließlich den Teilbaum `attributes`.
-# Ein direktes class= oder alt= landet als Top-Level-Property und wird
-# stillschweigend verworfen — deshalb überall `attributes.`.
-#
 prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Component) {
     _article = ${node}
     _title = ${q(node).property('title')}

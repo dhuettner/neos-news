@@ -1,7 +1,3 @@
-##
-# Übersichtsseite: listet alle Artikel darunter, absteigend nach
-# Veröffentlichungsdatum, paginiert über Flowpack.Listable.
-#
 prototype(Waterproof.News:Document.ArticleIndex) < prototype(Neos.Neos:Page) {
     head {
         feedLink = Waterproof.News:Component.FeedLink
@@ -11,10 +7,6 @@ prototype(Waterproof.News:Document.ArticleIndex) < prototype(Neos.Neos:Page) {
     }
 }
 
-##
-# Verweis auf den Feed im Kopf der Übersicht, damit Leseprogramme ihn finden.
-# Rendert nichts, wenn unterhalb der Übersicht kein Feed liegt.
-#
 prototype(Waterproof.News:Component.FeedLink) < prototype(Neos.Fusion:Component) {
     _feed = ${q(documentNode).children('[instanceof Waterproof.News:Document.Feed]').get(0)}
     @context.feedNode = ${this._feed}
@@ -34,15 +26,8 @@ prototype(Waterproof.News:Component.FeedLink) < prototype(Neos.Fusion:Component)
     `
 }
 
-##
-# Der eigentliche Listenkörper. Als eigener Prototyp, damit ein Site-Package
-# ihn in sein Seitenlayout einsetzen kann, ohne die Seite zu überschreiben.
-#
-# Alle Werte werden direkt an der PaginatedCollection aus documentNode und
-# request abgeleitet und NICHT als props von außen hereingereicht: Der
-# Prototyp ist dynamisch gecached und stellt beim Auswerten nur node,
-# documentNode und site wieder her.
-#
+# PaginatedCollection caches dynamically and restores only node, documentNode
+# and site. Values passed in via props or @context are lost there.
 prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Component) {
     renderer = Neos.Fusion:Join {
         filter = Waterproof.News:Component.ArticleFilter
@@ -52,15 +37,10 @@ prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Comp
             listRenderer = 'Waterproof.News:Component.ArticleCollection'
             showPreviousNextLinks = true
 
-            # Ohne eigenen Diskriminator liefert der dynamische Cache die
-            # erste gefilterte Ansicht für jede weitere Filterkombination aus.
             @cache.entryDiscriminator = ${'p' + String.toInteger(request.arguments.currentPage || 1)
                 + '-k' + (Type.isString(request.arguments.kategorie) ? request.arguments.kategorie : '')
                 + '-j' + (Type.isString(request.arguments.jahr) ? request.arguments.jahr : '')}
 
-            # Ohne eigene Tags fiele der dynamische Teilbaum auf
-            # TAG_EVERYTHING zurück, das die automatische Invalidierung
-            # nicht anfasst.
             @cache.entryTags {
                 1 = ${Neos.Caching.descendantOfTag(documentNode)}
                 2 = ${Neos.Caching.nodeTag(documentNode)}
@@ -68,9 +48,6 @@ prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Comp
         }
     }
 
-    # Ohne Tags bliebe die Liste stehen, bis jemand den Cache leert:
-    # Der Seiten-Cache ist nur mit dem Dokumentknoten selbst getaggt, nicht
-    # mit seinen Kindern.
     @cache {
         mode = 'cached'
         entryIdentifier {
@@ -83,13 +60,6 @@ prototype(Waterproof.News:Content.ArticleIndexBody) < prototype(Neos.Fusion:Comp
     }
 }
 
-##
-# Artikelmenge der Übersicht, gefiltert nach Kategorie und Jahr.
-#
-# Die Kategorie kommt als Knotenname der Taxonomie in den Parameter
-# `kategorie`, das Jahr vierstellig in `jahr`. Ohne Parameter bleibt die
-# Menge unverändert.
-#
 prototype(Waterproof.News:Component.FilteredArticles) < prototype(Neos.Fusion:Value) {
     @context.selectedCategory = ${Type.isString(request.arguments.kategorie) ? request.arguments.kategorie : ''}
     @context.selectedYear = ${Type.isString(request.arguments.jahr) ? request.arguments.jahr : ''}
@@ -107,25 +77,17 @@ prototype(Waterproof.News:Component.FilteredArticles) < prototype(Neos.Fusion:Va
     }
 }
 
-##
-# Filterleiste: Kategorien aus dem Vokabular, Jahre aus dem Bestand.
-#
 prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Component) {
-    # Vokabularname, überschreibbar im Site-Package.
     vocabulary = 'sparten'
 
     _articles = ${q(documentNode).children('[instanceof Waterproof.News:Document.Article]').get()}
 
-    # Alle zugeordneten Taxonomie-Knoten, mit Dubletten.
-    # Array.flatten gibt es in dieser Eel-Version nicht, deshalb Array.reduce
-    # mit Array.concat.
     _assignedTaxonomies = ${Array.reduce(
         this._articles,
         (carry, article) => Array.concat(carry, q(article).referenceNodes('taxonomyReferences').get()),
         []
     )}
 
-    # Nur Kategorien anbieten, denen tatsächlich ein Artikel zugeordnet ist.
     _categoryNames = ${Array.sort(Array.unique(Array.map(this._assignedTaxonomies, taxon => taxon.name.value)))}
 
     _years = ${Array.reverse(Array.sort(Array.unique(Array.map(
@@ -167,10 +129,6 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
         </nav>
     `
 
-    # Die Leiste hängt vom Request ab und muss deshalb dynamisch cachen.
-    # Ohne das kommt sie aus dem statischen Cache des umgebenden Prototyps
-    # und zeigt dauerhaft den Zustand des ersten Aufrufs — der aktive Filter
-    # wäre nie markiert.
     @cache {
         mode = 'dynamic'
         entryIdentifier {
@@ -181,9 +139,6 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
         entryTags {
             1 = ${Neos.Caching.descendantOfTag(documentNode)}
             2 = ${Neos.Caching.nodeTag(documentNode)}
-            # Die Kategorienamen in der Leiste stammen aus Taxonomie-Knoten
-            # außerhalb dieses Teilbaums. Ohne diesen Tag bliebe ein
-            # umbenanntes Label stehen.
             3 = ${Neos.Caching.nodeTypeTag('Sitegeist.Taxonomy:Taxonomy', documentNode)}
         }
         context {
@@ -194,14 +149,6 @@ prototype(Waterproof.News:Component.ArticleFilter) < prototype(Neos.Fusion:Compo
     }
 }
 
-##
-# Die Paginierung von Flowpack.Listable baut ihre Links ausschließlich mit
-# currentPage. Ohne diese Ergänzung führt "Seite 2" bei aktivem Filter auf
-# die ungefilterte Liste — ohne sichtbaren Fehler.
-#
-# Der Prototyp wird global erweitert, weil PaginatedCollection ihn fest
-# verdrahtet. Die Parameter werden nur gesetzt, wenn sie im Request stehen.
-#
 prototype(Flowpack.Listable:PaginationParameters) {
     kategorie = ${request.arguments.kategorie}
     kategorie.@if.isSet = ${Type.isString(request.arguments.kategorie) && request.arguments.kategorie != ''}

@@ -1,12 +1,3 @@
-##
-# Feed als eigener Dokumentknoten.
-#
-# Neos routet Dokumente mit genau einem site-weiten Suffix, standardmäßig
-# ".html". Eine URL wie /aktuelles.rss lässt sich deshalb nicht ohne Eingriff
-# in die Site-Konfiguration erzeugen. Der Feed ist hier stattdessen eine
-# eigene Seite unterhalb der Artikelübersicht — der Content-Type stimmt,
-# die Adresse endet auf das Site-Suffix.
-#
 'Waterproof.News:Document.Feed':
   superTypes:
     'Neos.Neos:Document': true
@@ -56,13 +47,10 @@
             nodeTypes: ['Waterproof.News:Document.ArticleIndex']
             placeholder: 'leer lassen für die übergeordnete Seite'
   options:
-    # Der Feed gehört nicht in Menüs.
     Neos:
       Neos:
         hiddenInIndex: true
   constraints:
     nodeTypes:
       '*': false
-      # Ohne diese Zeile bliebe die geerbte Freigabe aus Neos.Neos:Document
-      # bestehen und unter dem Feed liessen sich Seiten anlegen.
       'Neos.Neos:Document': false

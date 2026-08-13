@@ -1,9 +1,6 @@
 'Waterproof.News:Document.Article':
   superTypes:
     'Neos.Neos:Document': true
-    # Liefert die Property taxonomyReferences samt Sitegeist-Editor mit.
-    # Ein eigener Nachbau hätte den Editor verloren und wäre bei jedem
-    # Taxonomy-Update nachzuziehen.
     'Sitegeist.Taxonomy:Mixin.TaxonomyReferences': true
   ui:
     label: i18n

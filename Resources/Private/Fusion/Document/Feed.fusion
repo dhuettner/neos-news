@@ -1,12 +1,3 @@
-##
-# Atom- und RSS-Feed der Artikel einer Übersichtsseite.
-#
-# Aufbau und Feldwahl orientieren sich an Sebobo/Shel.Blog (MIT).
-#
-# Absolute URLs entstehen über Neos.Neos:NodeUri. Einen Eel-Helfer dafür gibt
-# es in Neos 9 nicht, deshalb bekommt jeder Eintrag einen eigenen Prototyp,
-# der die URI als Property berechnet.
-#
 prototype(Waterproof.News:Document.Feed) < prototype(Neos.Fusion:Http.Message) {
     @context.feedFormat = ${q(documentNode).property('feedFormat') || 'atom'}
 
@@ -39,10 +30,6 @@ prototype(Waterproof.News:Document.Feed) < prototype(Neos.Fusion:Http.Message) {
     }
 }
 
-##
-# Gemeinsame Datenbasis beider Formate.
-# Ohne gesetzte Quelle gilt die übergeordnete Seite.
-#
 prototype(Waterproof.News:Component.FeedArticles) < prototype(Neos.Fusion:Value) {
     index = ${q(documentNode).referenceNodes('source').get(0) || q(documentNode).parent().get(0)}
 
@@ -66,8 +53,6 @@ prototype(Waterproof.News:Component.AtomFeed) < prototype(Neos.Fusion:Component)
         node = ${site}
         absolute = true
     }
-    # RFC 4287 verlangt einen Autor je Eintrag oder einen auf Feed-Ebene.
-    # Da der Autor am Artikel optional ist, steht hier immer einer.
     _siteTitle = ${q(site).property('title')}
     _updated = ${Array.first(this._articles)
         ? Date.format(q(Array.first(this._articles)).property('publicationDate'), 'c')
@@ -112,6 +97,8 @@ prototype(Waterproof.News:Component.AtomEntry) < prototype(Neos.Fusion:Component
     `
 }
 
+# atom:link is emitted as a string: AFX reads a colon in a tag name as a
+# prototype reference. All values are escaped, an & would break the XML.
 prototype(Waterproof.News:Component.RssFeed) < prototype(Neos.Fusion:Component) {
     _articles = Waterproof.News:Component.FeedArticles
     _title = ${q(documentNode).parent().property('title') || q(site).property('title')}

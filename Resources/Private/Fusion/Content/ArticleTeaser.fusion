@@ -1,18 +1,11 @@
-##
-# Teaser-Element: zeigt die jüngsten Artikel einer Übersichtsseite,
-# einsetzbar auf jeder beliebigen Seite.
-#
 prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentComponent) {
     _headline = ${q(node).property('headline')}
     _limit = ${q(node).property('limit') || 3}
     _columns = ${q(node).property('columns') || 'cols3'}
-    # Referenzen gehören nicht zur Property-API; property() greift dafür nur
-    # über eine als deprecated markierte Rückfallebene.
     _source = ${q(node).referenceNodes('source').get(0)}
     _showArchiveLink = ${q(node).property('showArchiveLink')}
     _archiveLinkTitle = ${q(node).property('archiveLinkTitle')}
 
-    # Ohne gewählte Quelle wird die erste Artikelübersicht der Site verwendet.
     _index = ${this._source ? this._source : q(site).find('[instanceof Waterproof.News:Document.ArticleIndex]').get(0)}
 
     _articles = ${this._index
@@ -41,9 +34,6 @@ prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentCo
         </section>
     `
 
-    # Der Teaser liest aus einem fremden Teilbaum. Ein Tag am eigenen Knoten
-    # allein würde deshalb nichts bewirken. Der Node-Typ-Tag greift bei jeder
-    # Änderung an einem Artikel, unabhängig davon, wo er liegt.
     @cache {
         mode = 'cached'
         entryIdentifier {
@@ -52,8 +42,6 @@ prototype(Waterproof.News:Content.ArticleTeaser) < prototype(Neos.Neos:ContentCo
         entryTags {
             1 = ${Neos.Caching.nodeTag(node)}
             2 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.Article', documentNode)}
-            # Ohne Quelle wird die erste Übersicht der Site gesucht. Ändert
-            # sich deren Bestand, muss auch dieser Teaser neu rendern.
             3 = ${Neos.Caching.nodeTypeTag('Waterproof.News:Document.ArticleIndex', documentNode)}
         }
     }

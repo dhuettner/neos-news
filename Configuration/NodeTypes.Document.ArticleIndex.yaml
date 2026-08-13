@@ -47,8 +47,6 @@
   constraints:
     nodeTypes:
       '*': false
-      # Neos.Neos:Document erlaubt sich selbst; ohne diese Zeile bliebe die
-      # geerbte Freigabe bestehen und jede beliebige Seite waere hier erlaubt.
       'Neos.Neos:Document': false
       'Waterproof.News:Document.Article': true
       'Waterproof.News:Document.Feed': true
