@@ -1,8 +1,12 @@
 # Waterproof.News
 
-News- und Blog-Paket für **Neos CMS 9**. Artikel sind Dokument-Knoten, Listen entstehen über [Flowpack.Listable](https://github.com/Flowpack/Flowpack.Listable), Kategorien über [Sitegeist.Taxonomy](https://github.com/sitegeist/Sitegeist.Taxonomy).
+News and blog package for **Neos CMS 9**. Articles are document nodes, lists are
+built with [Flowpack.Listable](https://github.com/Flowpack/Flowpack.Listable),
+categories with [Sitegeist.Taxonomy](https://github.com/sitegeist/Sitegeist.Taxonomy).
 
-Das Paket liefert **Struktur, kein Design**: Markup mit Tailwind-Klassen, keine eigene CSS-Datei und kein eigener Build. Gestaltet wird im Build des einbindenden Site-Packages.
+The package ships **structure, not design**. Markup carries Tailwind class names,
+there is no CSS file and no build step of its own. Styling happens in the build
+of the site package that includes it.
 
 ## Installation
 
@@ -13,11 +17,15 @@ composer require waterproof/neos-news
 ./flow resource:publish
 ```
 
-Die drei Befehle nach dem Require sind unter DDEV Pflicht: Das Composer-Plugin schreibt den Paket-Cache nach `Data/Temporary/`, Flow liest ihn aber aus `/tmp/Flow/`. Ohne `package:rescan` bleibt das Paket unsichtbar.
+The three commands after the require are mandatory under DDEV. The Composer
+plugin writes the package cache to `Data/Temporary/`, while Flow reads it from
+`/tmp/Flow/`. Without `package:rescan` the package stays invisible.
 
-### Tailwind einrichten — sonst bleibt alles ungestylt
+### Set up Tailwind, or everything stays unstyled
 
-Die Fusion-Dateien dieses Pakets liegen außerhalb deines Site-Packages. Tailwind findet Klassen nur in Dateien, die im `content`-Glob stehen. Ergänze in deiner `tailwind.config.js`:
+The Fusion files of this package live outside your site package. Tailwind only
+finds class names in files listed in its `content` glob. Add this to your
+`tailwind.config.js`:
 
 ```js
 content: [
@@ -27,79 +35,96 @@ content: [
 ],
 ```
 
-Ohne diesen Eintrag ist das Paket funktionsfähig, aber ohne Layout.
+Without that entry the package works, but arrives without any layout.
 
-## Node-Typen
+## Node types
 
-| Node-Typ | Backend-Label | Zweck |
+| Node type | Backend label | Purpose |
 |---|---|---|
-| `Waterproof.News:Document.Article` | Artikel | Einzelbeitrag mit Datum, Teasertext, Teaserbild, Autor, Inhaltsbereich |
-| `Waterproof.News:Document.ArticleIndex` | Artikelübersicht | Elternseite, listet ihre Artikel paginiert |
-| `Waterproof.News:Content.ArticleTeaser` | Artikel-Teaser | Zeigt die jüngsten Artikel auf beliebigen Seiten |
-| `Waterproof.News:Document.Feed` | Feed | Atom- oder RSS-Ausgabe der Artikel |
+| `Waterproof.News:Document.Article` | Artikel | Single post with date, teaser text, teaser image, author, content area |
+| `Waterproof.News:Document.ArticleIndex` | Artikelübersicht | Parent page, lists its articles with pagination |
+| `Waterproof.News:Content.ArticleTeaser` | Artikel-Teaser | Shows the latest articles on any page |
+| `Waterproof.News:Document.Feed` | Feed | Atom or RSS output of the articles |
 
-Die Artikelübersicht lässt unterhalb ihrer selbst nur Artikel zu. Umgekehrt verhindert das nicht, dass ein Artikel an anderer Stelle angelegt wird — soll das ausgeschlossen sein, grenze es in deinem Site-Package über die Constraints deiner Basis-Seite ein.
+The article index only accepts articles below itself. That does not stop an
+article from being created elsewhere. If you want to rule that out, narrow the
+constraints of your own base page in your site package.
 
-## Spaltenwahl
+## Column choice
 
-`Document.ArticleIndex` und `Content.ArticleTeaser` besitzen die Eigenschaft `columns`:
+`Document.ArticleIndex` and `Content.ArticleTeaser` carry a `columns` property:
 
-| Wert | Label | Ergebnis |
+| Value | Label | Result |
 |---|---|---|
-| `cols1` | Einspaltig | eine Spalte auf allen Breiten |
-| `cols2` | Zweispaltig | ab `md` zwei Spalten |
-| `cols3` | Dreispaltig | ab `md` zwei, ab `lg` drei Spalten (Standard) |
-| `cols4` | Vierspaltig | ab `sm` zwei, ab `lg` vier Spalten |
+| `cols1` | Einspaltig | one column at every width |
+| `cols2` | Zweispaltig | two columns from `md` |
+| `cols3` | Dreispaltig | two from `md`, three from `lg` (default) |
+| `cols4` | Vierspaltig | two from `sm`, four from `lg` |
 
-Die Klassen stehen in `Component/GridClass.fusion` ausgeschrieben. Zusammengesetzte Klassennamen wären für den Tailwind-Scanner unsichtbar.
+The class names are written out in `Component/GridClass.fusion`. Composed class
+names would be invisible to the Tailwind scanner.
 
-## Eigenes Design einsetzen
+## Apply your own design
 
-Überschreibe in deinem Site-Package die Prototypen, die du gestalten willst:
+Override the prototypes you want to style in your site package:
 
 ```fusion
 prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Component) {
-    renderer = afx`…dein Kartenlayout…`
+    renderer = afx`…your card layout…`
 }
 ```
 
-| Prototyp | Zuständig für |
+| Prototype | Responsible for |
 |---|---|
-| `Waterproof.News:Document.Article.Short` | Kartendarstellung in Listen |
-| `Waterproof.News:Content.ArticleIndexBody` | Listenkörper der Übersicht |
-| `Waterproof.News:Content.ArticleBody` | Detailseite |
-| `Waterproof.News:Component.ArticleCollection` | Raster um die Karten |
-| `Waterproof.News:Component.GridClass` | Zuordnung Spaltenwert zu Klassen |
+| `Waterproof.News:Document.Article.Short` | Card in listings |
+| `Waterproof.News:Content.ArticleIndexBody` | List body of the index |
+| `Waterproof.News:Content.ArticleBody` | Detail page |
+| `Waterproof.News:Component.ArticleCollection` | Grid around the cards |
+| `Waterproof.News:Component.GridClass` | Mapping of column value to classes |
 
-## Filter und Archiv
+## Filters and archive
 
-Die Übersicht wertet zwei Parameter aus:
+The index reads two parameters:
 
-| Parameter | Wirkung |
+| Parameter | Effect |
 |---|---|
-| `kategorie` | Knotenname der Taxonomie, etwa `?kategorie=abwasserbeseitigung` |
-| `jahr` | vierstellig, etwa `?jahr=2026` |
+| `kategorie` | Node name of the taxonomy, for example `?kategorie=abwasserbeseitigung` |
+| `jahr` | Four digits, for example `?jahr=2026` |
 
-Beide sind kombinierbar und bleiben beim Blättern erhalten. Die Filterleiste zeigt nur Kategorien, denen tatsächlich ein Artikel zugeordnet ist, und die im Bestand vorkommenden Jahre.
+They combine and survive pagination. The filter bar only offers categories that
+actually carry an article, and the years present in the archive.
 
 ## Feed
 
-Der Feed ist ein eigener Dokumentknoten unterhalb der Übersicht, Format wählbar zwischen Atom und RSS 2.0. Die Übersichtsseite verweist im Kopf per `<link rel="alternate">` darauf.
+The feed is a document node below the index, with a choice between Atom and
+RSS 2.0. The index page points to it with `<link rel="alternate">` in the head.
 
-**Warum kein `/aktuelles.rss`:** Neos routet Dokumente mit genau einem site-weiten URI-Suffix, standardmäßig `.html`. Eine abweichende Endung ließe sich nur über die Site-Konfiguration erreichen und würde dann für alle Seiten gelten. Der Feed liegt deshalb unter `/aktuelles/feed.html` — mit korrektem `Content-Type`.
+**Why not `/aktuelles.rss`:** Neos routes documents with exactly one site wide
+URI suffix, `.html` by default. A different ending would have to be set in the
+site configuration and would then apply to every page. The feed therefore lives
+at `/aktuelles/feed.html`, served with the correct content type.
 
-## Strukturierte Daten
+## Structured data
 
-Artikelseiten enthalten ein JSON-LD-Objekt vom Typ `Article` mit Titel, Datum, Beschreibung, kanonischer URL und Herausgeber. Der Autor erscheint nur, wenn er gepflegt ist.
+Article pages carry a JSON-LD object of type `Article` with title, date,
+description, canonical URL and publisher. The author only appears when it is
+filled in.
 
-## Sprachen
+## Languages
 
-Backend-Labels liegen als XLIFF in `Resources/Private/Translations/` für Deutsch und Englisch vor. Weitere Sprachen: Katalog kopieren und übersetzen, die Node-Typen selbst brauchen keine Änderung.
+Backend labels ship as XLIFF in `Resources/Private/Translations/` for German and
+English. For another language, copy the catalogue and translate it. The node
+types themselves need no change.
 
-## Kategorien
+## Categories
 
-Artikel referenzieren Taxonomien über die Eigenschaft `taxonomyReferences`. Mehrfachzuordnung ist möglich. Vokabular und Taxonomien legst du im Neos-Backend unter *Taxonomie* an.
+Articles reference taxonomies through the `taxonomyReferences` property.
+Multiple assignments are possible. Vocabulary and taxonomies are created in the
+Neos backend under *Taxonomie*.
 
-## Lizenz
+## License
 
-MIT. Feed-Aufbau und strukturierte Daten orientieren sich an [Sebobo/Shel.Blog](https://github.com/Sebobo/Shel.Blog) (MIT).
+MIT. Feed structure and structured data follow the approach of
+[Sebobo/Shel.Blog](https://github.com/Sebobo/Shel.Blog) (MIT).
+
+Built and maintained by [waterproof.agency](https://waterproof.agency/).
