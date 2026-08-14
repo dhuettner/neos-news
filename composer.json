@@ -1,7 +1,7 @@
 {
     "name": "waterproof/neos-news",
     "type": "neos-package",
-    "description": "News- und Blog-Paket für Neos CMS 9 auf Basis von Flowpack.Listable und Sitegeist.Taxonomy",
+    "description": "News and blog package for Neos CMS 9, built on Flowpack.Listable and Sitegeist.Taxonomy",
     "keywords": [
         "neos",
         "neos-cms",
@@ -11,7 +11,7 @@
         "afx",
         "taxonomy"
     ],
-    "homepage": "https://github.com/dhuettner/neos-news",
+    "homepage": "https://waterproof.agency/",
     "license": "MIT",
     "authors": [
         {
