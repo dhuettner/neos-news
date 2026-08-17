@@ -10,11 +10,11 @@
                 <source>Full, paginated list of articles for any page. Choose the index, articles per page and columns.</source>
                 <target xml:lang="de">Vollständige, seitenweise Liste von Artikeln für beliebige Seiten. Übersichtsseite, Artikel je Seite und Spalten sind wählbar.</target>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.list" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.list" xml:space="preserve" approved="yes">
                 <source>List</source>
                 <target xml:lang="de">Liste</target>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.layout" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.layout" xml:space="preserve" approved="yes">
                 <source>Appearance</source>
                 <target xml:lang="de">Darstellung</target>
             </trans-unit>

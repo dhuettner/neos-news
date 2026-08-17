@@ -6,7 +6,7 @@
                 <source>Article index</source>
                 <target xml:lang="de">Artikelübersicht</target>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.layout" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.layout" xml:space="preserve" approved="yes">
                 <source>Appearance</source>
                 <target xml:lang="de">Darstellung</target>
             </trans-unit>

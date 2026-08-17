@@ -8,10 +8,10 @@
             <trans-unit id="ui.help.message" xml:space="preserve" approved="yes">
                 <source>Full, paginated list of articles for any page. Choose the index, articles per page and columns.</source>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.list" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.list" xml:space="preserve" approved="yes">
                 <source>List</source>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.layout" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.layout" xml:space="preserve" approved="yes">
                 <source>Appearance</source>
             </trans-unit>
             <trans-unit id="properties.headline" xml:space="preserve" approved="yes">

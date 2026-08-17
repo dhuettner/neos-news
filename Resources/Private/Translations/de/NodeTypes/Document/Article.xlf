@@ -6,7 +6,7 @@
                 <source>Article</source>
                 <target xml:lang="de">Artikel</target>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.article" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.article" xml:space="preserve" approved="yes">
                 <source>Article</source>
                 <target xml:lang="de">Artikel</target>
             </trans-unit>

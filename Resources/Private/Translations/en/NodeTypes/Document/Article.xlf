@@ -5,7 +5,7 @@
             <trans-unit id="ui.label" xml:space="preserve" approved="yes">
                 <source>Article</source>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.article" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.article" xml:space="preserve" approved="yes">
                 <source>Article</source>
             </trans-unit>
             <trans-unit id="properties.publicationDate" xml:space="preserve" approved="yes">

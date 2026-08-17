@@ -5,7 +5,7 @@
             <trans-unit id="ui.label" xml:space="preserve" approved="yes">
                 <source>Feed</source>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.feed" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.feed" xml:space="preserve" approved="yes">
                 <source>Feed</source>
             </trans-unit>
             <trans-unit id="properties.feedFormat" xml:space="preserve" approved="yes">

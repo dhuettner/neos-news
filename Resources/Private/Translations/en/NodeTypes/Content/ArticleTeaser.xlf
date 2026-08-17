@@ -8,10 +8,10 @@
             <trans-unit id="ui.help.message" xml:space="preserve" approved="yes">
                 <source>Shows the latest articles of an article index. Choose the index, the number of articles and the columns.</source>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.teaser" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.teaser" xml:space="preserve" approved="yes">
                 <source>Teaser</source>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.layout" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.layout" xml:space="preserve" approved="yes">
                 <source>Appearance</source>
             </trans-unit>
             <trans-unit id="properties.headline" xml:space="preserve" approved="yes">

@@ -10,11 +10,11 @@
                 <source>Shows the latest articles of an article index. Choose the index, the number of articles and the columns.</source>
                 <target xml:lang="de">Zeigt die neuesten Artikel einer Artikelübersicht. Übersichtsseite, Anzahl und Spalten sind wählbar; ohne gewählte Übersicht wird die erste der Seite verwendet.</target>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.teaser" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.teaser" xml:space="preserve" approved="yes">
                 <source>Teaser</source>
                 <target xml:lang="de">Teaser</target>
             </trans-unit>
-            <trans-unit id="ui.inspector.groups.layout" xml:space="preserve" approved="yes">
+            <trans-unit id="groups.layout" xml:space="preserve" approved="yes">
                 <source>Appearance</source>
                 <target xml:lang="de">Darstellung</target>
             </trans-unit>
