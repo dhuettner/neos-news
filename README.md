@@ -8,6 +8,43 @@ The package ships **structure, not design**. Markup carries Tailwind class names
 there is no CSS file and no build step of its own. Styling happens in the build
 of the site package that includes it.
 
+## When to use it, and when not
+
+Use it when you want articles as real document nodes with their own URLs,
+categories through taxonomies, a feed and structured data — and when your site
+package already runs Tailwind and you want to keep control of the design.
+
+Do not use it when:
+
+- **Your project has no Tailwind build.** The markup carries nothing but Tailwind
+  class names. Without that build the output arrives unstyled, and you would end
+  up overriding every prototype anyway.
+- **You need a magazine layout out of the box.** There are no ready-made teaser
+  variants, no lead article, no sliders. What you get is a grid with one to four
+  columns.
+- **Articles must live across several sites or content dimensions.** The index
+  reads its articles from its own children in the current dimension. Anything
+  beyond that is your own Fusion.
+- **You expect a maintained editorial workflow.** No draft states beyond the Neos
+  workspaces, no scheduled publishing, no per-article permissions.
+
+## Requirements
+
+| Component | Version | Note |
+|---|---|---|
+| Neos CMS | 9.0 – 9.1 | Tested against 9.1.8 |
+| PHP | >= 8.2 | Inherited from `neos/neos`; tested on 8.3 |
+| Flowpack.Listable | ^4.0 | Pagination |
+| Sitegeist.Taxonomy | ^2.0 | Categories |
+| Tailwind CSS | 3.x | In the site package, not here |
+
+Neos 9.2 is **not** tested. It changes the content graph schema, so treat
+compatibility as open until someone has run it.
+
+**Your site package must bring its own content node types.** The Neos base
+distribution ships no text or image element. Without one, an article detail page
+renders its header and an empty content area.
+
 ## Installation
 
 ```bash
@@ -43,8 +80,14 @@ Without that entry the package works, but arrives without any layout.
 |---|---|---|
 | `Waterproof.News:Document.Article` | Artikel | Single post with date, teaser text, teaser image, author, content area |
 | `Waterproof.News:Document.ArticleIndex` | Artikelübersicht | Parent page, lists its articles with pagination |
-| `Waterproof.News:Content.ArticleTeaser` | Artikel-Teaser | Shows the latest articles on any page |
 | `Waterproof.News:Document.Feed` | Feed | Atom or RSS output of the articles |
+| `Waterproof.News:Content.ArticleTeaser` | Aktuelles-Teaser (News) | Shows the latest articles on any page, with a link to the index |
+| `Waterproof.News:Content.ArticleList` | Artikelliste (News) | Full, paginated list of an index on any page |
+
+`Content.ArticleTeaser` is the short form for a landing page — a handful of
+articles and a link onward. `Content.ArticleList` is the long form and paginates
+like the index itself. Both point at an `ArticleIndex` through their `source`
+property.
 
 The article index only accepts articles below itself. That does not stop an
 article from being created elsewhere. If you want to rule that out, narrow the
@@ -80,6 +123,7 @@ prototype(Waterproof.News:Document.Article.Short) < prototype(Neos.Fusion:Compon
 | `Waterproof.News:Content.ArticleIndexBody` | List body of the index |
 | `Waterproof.News:Content.ArticleBody` | Detail page |
 | `Waterproof.News:Component.ArticleCollection` | Grid around the cards |
+| `Waterproof.News:Component.ArticleListCollection` | Grid of `Content.ArticleList` |
 | `Waterproof.News:Component.GridClass` | Mapping of column value to classes |
 
 ## Filters and archive
@@ -122,9 +166,13 @@ Articles reference taxonomies through the `taxonomyReferences` property.
 Multiple assignments are possible. Vocabulary and taxonomies are created in the
 Neos backend under *Taxonomie*.
 
+## Changelog
+
+Release history and upgrade notes are in [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
 MIT. Feed structure and structured data follow the approach of
 [Sebobo/Shel.Blog](https://github.com/Sebobo/Shel.Blog) (MIT).
 
-Built and maintained by [waterproof.agency](https://waterproof.agency/).
+Built and maintained by [waterproof.agency](https://waterproof.agency/cms/neos).
