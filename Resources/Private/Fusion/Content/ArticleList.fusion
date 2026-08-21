@@ -42,8 +42,18 @@ prototype(Waterproof.News:Component.ArticleListCollection) < prototype(Neos.Fusi
     index = ${q(node).referenceNodes('source').get(0)
         || q(site).find('[instanceof Waterproof.News:Document.ArticleIndex]').get(0)}
 
+    _category = ${q(node).referenceNodes('category').get(0)}
+
+    @context.selectedCategoryName = ${this._category ? this._category.name.value : ''}
+
     value = ${this.index
-        ? q(this.index).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC')
+        ? Array.filter(
+            q(this.index).children('[instanceof Waterproof.News:Document.Article]').sort('publicationDate', 'DESC').get(),
+            article => !selectedCategoryName || Array.some(
+                Array.map(q(article).referenceNodes('taxonomyReferences').get(), taxon => taxon.name.value),
+                assigned => assigned == selectedCategoryName
+            )
+        )
         : []}
 }
 

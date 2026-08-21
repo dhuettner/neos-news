@@ -42,3 +42,15 @@
         inspector:
           group: 'list'
           position: 20
+    category:
+      type: reference
+      ui:
+        label: 'Kategorie (optional)'
+        reloadIfChanged: true
+        inspector:
+          group: 'list'
+          position: 30
+          editorOptions:
+            nodeTypes: ['Sitegeist.Taxonomy:Taxonomy']
+            startingPoint: '/<Sitegeist.Taxonomy:Root>/sparten'
+            placeholder: 'Alle Kategorien'
